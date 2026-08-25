@@ -222,6 +222,7 @@ function startRound() {
     winner = null;
     currentPlayer = playerOne;
     roundNumber.textContent = round;
+    nextRoundBtn.style.display = round < TOTAL_ROUNDS ? "inline-flex" : "none";
     showScreen(countdownScreen);
 
     let count = 3;
@@ -343,12 +344,9 @@ function endRound(result) {
         message = `${playerTwo.name} Wins the Round!`;
     }
 
-    // Keep the completed board visible briefly before showing the result overlay.
     roundResultTimer = setTimeout(() => {
         showRoundResult(message);
 
-        // Round 3 is the end of the match. Give the player time to see the
-        // round result before moving to the final match screen.
         if (round >= TOTAL_ROUNDS) {
             finalResultTimer = setTimeout(showFinalResult, FINAL_RESULT_DELAY);
         }
@@ -357,6 +355,7 @@ function endRound(result) {
 
 function showRoundResult(message) {
     roundResultMessage.textContent = message;
+    nextRoundBtn.style.display = round < TOTAL_ROUNDS ? "inline-flex" : "none";
     roundResult.style.display = "flex";
 }
 
