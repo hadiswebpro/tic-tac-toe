@@ -1,6 +1,15 @@
-/* Tablet-specific responsive layout */
+/* Responsive layout for tablet and desktop */
 
+/* -----------------------------
+   TABLET: 701px - 1100px
+   ----------------------------- */
 @media (min-width: 701px) and (max-width: 1100px) {
+    html,
+    body {
+        min-height: 100%;
+        overflow-x: hidden;
+    }
+
     .welcome-screen,
     .mode-screen,
     .difficulty-screen,
@@ -9,90 +18,107 @@
     .countdown-screen,
     .game-screen,
     .result-screen {
-        width: min(100% - 56px, 980px);
+        width: min(100% - 48px, 960px);
+        min-height: 100vh;
+        min-height: 100svh;
     }
 
-    /* Welcome: give the page breathing room and keep Start Game near the bottom. */
+    /* ---------- Welcome ---------- */
     .welcome-screen {
-        min-height: 100vh;
-        padding: 36px 0 30px;
+        padding: 34px 0 28px;
+        align-items: stretch;
     }
 
     .welcome-content {
-        width: min(650px, 100%);
-        min-height: calc(100vh - 66px);
-        padding: 55px 46px 28px;
-        display: flex;
-        flex-direction: column;
+        width: min(680px, 100%);
+        min-height: calc(100svh - 62px);
+        padding: 34px 42px 28px;
+        display: grid;
+        grid-template-rows: auto auto auto 1fr auto;
+        justify-items: center;
         align-items: center;
-        justify-content: space-between;
-        gap: 20px;
+        gap: 0;
     }
 
     .welcome-content h1 {
-        font-size: clamp(4.2rem, 9vw, 6.2rem);
+        margin: 0;
+        font-size: clamp(3.8rem, 8.5vw, 6rem);
+        letter-spacing: -4px;
     }
 
     .welcome-content h2 {
-        margin-top: 12px;
-        font-size: 1.08rem;
+        margin: 22px 0 0;
+        font-size: clamp(1rem, 2vw, 1.15rem);
+        letter-spacing: 4px;
     }
 
     .welcome-image {
-        width: min(230px, 34vw);
-        height: 145px;
-        margin: 12px auto 0;
+        width: clamp(165px, 24vw, 215px);
+        height: clamp(105px, 17vw, 135px);
+        margin: 22px auto 0;
     }
 
     .welcome-content .start-game-btn {
         width: min(430px, 100%);
-        margin-top: auto;
-        margin-bottom: 8px;
         min-height: 56px;
+        margin: 24px auto 4px;
     }
 
-    /* Keep selection pages balanced on tablet. */
+    /* ---------- Selection / setup screens ---------- */
     .mode-content,
     .difficulty-content {
-        width: min(760px, 100%);
-        padding: 48px 35px;
+        width: min(780px, 100%);
+        padding: 44px 32px;
     }
 
     .mode-buttons,
     .difficulty-buttons {
-        gap: 26px;
-        margin-top: 42px;
+        gap: 24px;
+        margin-top: 34px;
     }
 
     .game-mode-btn,
     .difficulty-btn {
-        min-height: 165px;
+        min-height: 155px;
+        padding: 26px 20px;
     }
 
-    /* Game: board centered, compact score cards underneath it. */
+    .setup-content {
+        width: min(520px, 100%);
+        max-height: calc(100svh - 70px);
+        overflow-y: auto;
+    }
+
+    /* ---------- Game ---------- */
     .game-screen {
-        width: min(100% - 48px, 900px);
-        padding: 78px 20px 42px;
-        gap: 22px;
+        width: min(100% - 42px, 940px);
+        padding: 72px 18px 30px;
+        gap: 18px;
+        align-items: center;
+        overflow: visible;
+    }
+
+    .game-header {
+        flex: 0 0 auto;
     }
 
     .game {
         width: 100%;
-        max-width: 760px;
-        grid-template-columns: minmax(160px, 230px) minmax(160px, 230px);
-        grid-template-rows: auto auto;
-        grid-template-areas:
-            "board board"
-            "p1 p2";
+        max-width: 820px;
+        display: grid;
+        grid-template-columns: minmax(155px, 220px) minmax(300px, 430px) minmax(155px, 220px);
+        grid-template-rows: auto;
+        grid-template-areas: "p1 board p2";
         align-items: center;
         justify-content: center;
-        gap: 24px 28px;
+        gap: 18px;
     }
 
     .gameboard {
         grid-area: board;
         justify-self: center;
-        width: min(46vw, 430px);
+        width: min(40vw, 390px);
+        max-width: 390px;
         aspect-ratio: 1;
     }
 
@@ -105,14 +131,18 @@
     }
 
     .player-board {
-        min-height: 105px;
-        padding: 14px 12px;
+        width: 100%;
+        min-height: 125px;
+        padding: 16px 10px;
         border-radius: 16px;
     }
 
     .player-board h3 {
-        font-size: .82rem;
+        font-size: .8rem;
         margin-bottom: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .player-board > span:first-of-type {
@@ -120,31 +150,144 @@
     }
 
     .player-board > span:last-of-type {
-        font-size: 1.55rem;
+        font-size: 1.6rem;
     }
 
-    .game-header {
-        margin-bottom: 2px;
+    /* Keep the round result inside the game viewport. */
+    .round-result-box {
+        width: min(90vw, 430px);
+    }
+
+    /* Smaller tablets: move the score cards under the centered board. */
+    .game-screen {
+        padding-left: 10px;
+        padding-right: 10px;
     }
 }
 
+/* 701px - 850px: tablet portrait / compact tablet */
 @media (min-width: 701px) and (max-width: 850px) {
+    .welcome-screen,
+    .mode-screen,
+    .difficulty-screen,
+    .friend-setup,
+    .bot-setup,
+    .countdown-screen,
+    .game-screen,
+    .result-screen {
+        width: min(100% - 36px, 780px);
+    }
+
+    .welcome-screen {
+        padding-top: 28px;
+        padding-bottom: 24px;
+    }
+
     .welcome-content {
-        padding-top: 48px;
-        padding-left: 32px;
-        padding-right: 32px;
+        min-height: calc(100svh - 52px);
+        padding: 28px 28px 24px;
     }
 
     .welcome-content h1 {
-        font-size: clamp(3.7rem, 10vw, 5.2rem);
+        font-size: clamp(3.2rem, 9vw, 4.7rem);
+    }
+
+    .welcome-content h2 {
+        margin-top: 18px;
+        font-size: .95rem;
     }
 
     .welcome-image {
-        width: 205px;
-        height: 130px;
+        width: 175px;
+        height: 112px;
+        margin-top: 18px;
+    }
+
+    .welcome-content .start-game-btn {
+        width: min(380px, 100%);
+        min-height: 52px;
+        margin-top: 18px;
+    }
+
+    .game {
+        max-width: 680px;
+        grid-template-columns: minmax(135px, 185px) minmax(260px, 350px) minmax(135px, 185px);
+        gap: 14px;
     }
 
     .gameboard {
-        width: min(52vw, 390px);
+        width: min(43vw, 340px);
+    }
+
+    .player-board {
+        min-height: 112px;
+        padding: 13px 8px;
+    }
+}
+
+/* -----------------------------
+   DESKTOP: 1101px+
+   ----------------------------- */
+@media (min-width: 1101px) {
+    .welcome-screen,
+    .mode-screen,
+    .difficulty-screen,
+    .friend-setup,
+    .bot-setup,
+    .countdown-screen,
+    .game-screen,
+    .result-screen {
+        min-height: 100vh;
+    }
+
+    /* Keep the welcome page centered without creating a vertical scroll. */
+    .welcome-screen {
+        width: min(1180px, calc(100% - 72px));
+        padding: 30px 0;
+    }
+
+    .welcome-content {
+        width: min(700px, 100%);
+        padding: 42px 36px 28px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .welcome-content h1 {
+        font-size: clamp(4.2rem, 6vw, 6.5rem);
+    }
+
+    .welcome-content h2 {
+        margin-top: 26px;
+        font-size: 1.08rem;
+    }
+
+    .welcome-image {
+        width: 200px;
+        height: 128px;
+        margin: 22px auto 22px;
+    }
+
+    .welcome-content .start-game-btn {
+        width: min(430px, 100%);
+        min-height: 54px;
+    }
+
+    /* Desktop game remains a balanced three-column layout. */
+    .game-screen {
+        width: min(1240px, calc(100% - 72px));
+        padding: 62px 0 34px;
+    }
+
+    .game {
+        max-width: 1160px;
+        grid-template-columns: minmax(180px, 230px) minmax(400px, 520px) minmax(180px, 230px);
+        gap: clamp(34px, 4vw, 70px);
+    }
+
+    .gameboard {
+        justify-self: center;
     }
 }
