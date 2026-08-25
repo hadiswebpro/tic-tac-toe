@@ -68,43 +68,18 @@ const FINAL_RESULT_DELAY = 1200;
 const mobileBackStyles = document.createElement("style");
 mobileBackStyles.textContent = `
 @media (max-width: 700px) {
-    .screen-shell .back-btn {
-        width: 38px;
-        height: 38px;
-        top: -6px;
-        left: 0;
-        font-size: 1.15rem;
-    }
-
-    .game-screen .game-exit-btn {
-        width: 38px;
-        height: 38px;
-        top: 8px;
-        left: 0;
-        font-size: 1.15rem;
-    }
+    .screen-shell .back-btn { width:38px; height:38px; top:-6px; left:0; font-size:1.15rem; }
+    .game-screen .game-exit-btn { width:38px; height:38px; top:8px; left:0; font-size:1.15rem; }
 }
-
-@media (max-width: 460px) {
-    .screen-shell .back-btn {
-        width: 34px;
-        height: 34px;
-        top: -10px;
-        left: 0;
-        font-size: 1rem;
-    }
-
-    .game-screen .game-exit-btn {
-        width: 34px;
-        height: 34px;
-        top: 5px;
-        font-size: 1rem;
-    }
-}
-`;
+@media (max-width:460px) {
+    .screen-shell .back-btn { width:34px; height:34px; top:-10px; left:0; font-size:1rem; }
+    .game-screen .game-exit-btn { width:34px; height:34px; top:5px; font-size:1rem; }
+}`;
 document.head.appendChild(mobileBackStyles);
 
-welcomeScreen.style.display = "block";
+/* Every screen is a separate full-page view. The welcome page starts visible;
+   all other screens are hidden until showScreen() explicitly opens them. */
+welcomeScreen.style.display = "flex";
 modeScreen.style.display = "none";
 friendSetup.style.display = "none";
 botSetup.style.display = "none";
@@ -185,10 +160,8 @@ startGameBtns.forEach(button => {
     button.addEventListener("click", () => {
         if (!gameMode) return showMessage("Please choose a game mode first.");
         if (!selectedSymbol) return showMessage("Please choose X or O.");
-
         playerOneName = gameMode === "bot" ? botPlayerNameInput.value.trim() : playerOneNameInput.value.trim();
         if (!playerOneName) return showMessage("Please enter your name.");
-
         if (gameMode === "friend") {
             playerTwoName = playerTwoNameInput.value.trim();
             if (!playerTwoName) return showMessage("Please enter Player 2 name.");
@@ -196,7 +169,6 @@ startGameBtns.forEach(button => {
             playerTwoName = "Bot";
             if (!difficulty) return showMessage("Please choose a difficulty first.");
         }
-
         const secondSymbol = selectedSymbol === "X" ? "O" : "X";
         playerOne = createPlayer(playerOneName, selectedSymbol);
         playerTwo = createPlayer(playerTwoName, secondSymbol);
@@ -224,14 +196,11 @@ function startRound() {
     roundNumber.textContent = round;
     nextRoundBtn.style.display = round < TOTAL_ROUNDS ? "inline-flex" : "none";
     showScreen(countdownScreen);
-
     let count = 3;
     countdownNumber.textContent = count;
-
     countdownTimer = setInterval(() => {
         count--;
         countdownNumber.textContent = count > 0 ? count : "GO!";
-
         if (count <= 0) {
             clearInterval(countdownTimer);
             countdownTimer = null;
@@ -253,33 +222,20 @@ boardCells.forEach(cell => {
 
 function Game(index) {
     if (gameEnded || board[index] !== "") return;
-
     board[index] = currentPlayer.symbol;
     boardCells[index].textContent = currentPlayer.symbol;
     boardCells[index].classList.remove("x", "o");
     boardCells[index].classList.add(currentPlayer.symbol.toLowerCase());
-
     const winnerSymbol = checkWinner();
     if (winnerSymbol !== null) return endRound(winnerSymbol);
     if (board.every(cell => cell !== "")) return endRound("draw");
-
     currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
-
-    if (gameMode === "bot" && currentPlayer === playerTwo) {
-        botTimer = setTimeout(makeBotMove, 300);
-    }
+    if (gameMode === "bot" && currentPlayer === playerTwo) botTimer = setTimeout(makeBotMove, 300);
 }
 
 function checkWinner() {
-    const winningCombinations = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        [0, 4, 8], [2, 4, 6]
-    ];
-
-    for (const [a, b, c] of winningCombinations) {
-        if (board[a] && board[a] === board[b] && board[b] === board[c]) return board[a];
-    }
+    const winningCombinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    for (const [a,b,c] of winningCombinations) if (board[a] && board[a] === board[b] && board[b] === board[c]) return board[a];
     return null;
 }
 
@@ -289,13 +245,7 @@ function makeBotMove() {
     const move = difficulty === "hard" ? getHardBotMove() : getEasyBotMove();
     if (move !== null) Game(move);
 }
-
-function getEasyBotMove() {
-    const emptyCells = getEmptyCells();
-    if (!emptyCells.length) return null;
-    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
-}
-
+function getEasyBotMove() { const cells = getEmptyCells(); return cells.length ? cells[Math.floor(Math.random()*cells.length)] : null; }
 function getHardBotMove() {
     const winningMove = findWinningMove(playerTwo.symbol);
     if (winningMove !== null) return winningMove;
@@ -304,52 +254,28 @@ function getHardBotMove() {
     if (board[4] === "") return 4;
     return getEasyBotMove();
 }
-
 function findWinningMove(symbol) {
     for (const index of getEmptyCells()) {
         board[index] = symbol;
-        const winnerSymbol = checkWinner();
+        const result = checkWinner();
         board[index] = "";
-        if (winnerSymbol === symbol) return index;
+        if (result === symbol) return index;
     }
     return null;
 }
-
-function getEmptyCells() {
-    return board.reduce((cells, cell, index) => {
-        if (cell === "") cells.push(index);
-        return cells;
-    }, []);
-}
+function getEmptyCells() { return board.reduce((cells,cell,index) => { if (cell === "") cells.push(index); return cells; }, []); }
 
 function endRound(result) {
     gameEnded = true;
     clearTimeout(botTimer);
     botTimer = null;
-
     let message;
-
-    if (result === "draw") {
-        winner = null;
-        message = "It's a Draw!";
-    } else if (result === playerOne.symbol) {
-        winner = playerOne;
-        playerOneScoreValue++;
-        playerOneScore.textContent = playerOneScoreValue;
-        message = `${playerOne.name} Wins the Round!`;
-    } else {
-        winner = playerTwo;
-        playerTwoScoreValue++;
-        playerTwoScore.textContent = playerTwoScoreValue;
-        message = `${playerTwo.name} Wins the Round!`;
-    }
-
+    if (result === "draw") { winner = null; message = "It's a Draw!"; }
+    else if (result === playerOne.symbol) { winner = playerOne; playerOneScoreValue++; playerOneScore.textContent = playerOneScoreValue; message = `${playerOne.name} Wins the Round!`; }
+    else { winner = playerTwo; playerTwoScoreValue++; playerTwoScore.textContent = playerTwoScoreValue; message = `${playerTwo.name} Wins the Round!`; }
     roundResultTimer = setTimeout(() => {
         showRoundResult(message);
-
-        if (round >= TOTAL_ROUNDS) {
-            finalResultTimer = setTimeout(showFinalResult, FINAL_RESULT_DELAY);
-        }
+        if (round >= TOTAL_ROUNDS) finalResultTimer = setTimeout(showFinalResult, FINAL_RESULT_DELAY);
     }, RESULT_REVEAL_DELAY);
 }
 
@@ -358,12 +284,7 @@ function showRoundResult(message) {
     nextRoundBtn.style.display = round < TOTAL_ROUNDS ? "inline-flex" : "none";
     roundResult.style.display = "flex";
 }
-
-nextRoundBtn.addEventListener("click", () => {
-    if (round >= TOTAL_ROUNDS) return;
-    round++;
-    startRound();
-});
+nextRoundBtn.addEventListener("click", () => { if (round >= TOTAL_ROUNDS) return; round++; startRound(); });
 
 function showFinalResult() {
     clearTimers();
@@ -373,68 +294,18 @@ function showFinalResult() {
     finalPlayerTwoName.textContent = playerTwo.name;
     finalPlayerOneScore.textContent = playerOneScoreValue;
     finalPlayerTwoScore.textContent = playerTwoScoreValue;
-
-    if (playerOneScoreValue > playerTwoScoreValue) {
-        finalResult.textContent = `${playerOne.name} Wins the Match!`;
-    } else if (playerTwoScoreValue > playerOneScoreValue) {
-        finalResult.textContent = `${playerTwo.name} Wins the Match!`;
-    } else {
-        finalResult.textContent = "The Match Ends in a Draw!";
-    }
+    if (playerOneScoreValue > playerTwoScoreValue) finalResult.textContent = `${playerOne.name} Wins the Match!`;
+    else if (playerTwoScoreValue > playerOneScoreValue) finalResult.textContent = `${playerTwo.name} Wins the Match!`;
+    else finalResult.textContent = "The Match Ends in a Draw!";
     showScreen(resultScreen);
 }
 
-playAgainBtn.addEventListener("click", () => {
-    round = 1;
-    playerOneScoreValue = 0;
-    playerTwoScoreValue = 0;
-    playerOneScore.textContent = "0";
-    playerTwoScore.textContent = "0";
-    startRound();
-});
-
-mainMenuBtn.addEventListener("click", () => {
-    clearTimers();
-    showScreen(modeScreen);
-});
-
-exitGameBtn.addEventListener("click", () => {
-    showMessage("Are you sure you want to leave the game?", () => {
-        clearTimers();
-        gameEnded = true;
-        showScreen(welcomeScreen);
-    }, true);
-});
-
-function resetBoard() {
-    board = ["", "", "", "", "", "", "", "", ""];
-    boardCells.forEach(cell => {
-        cell.textContent = "";
-        cell.classList.remove("x", "o");
-    });
-}
-
-function createPlayer(name, symbol) {
-    return { name, symbol };
-}
-
-function showMessage(message, action = null, isConfirmation = false) {
-    messageText.textContent = message;
-    pendingMessageAction = action;
-    messageBtn.textContent = isConfirmation ? "Yes" : "OK";
-    messageCancelBtn.style.display = isConfirmation ? "inline-flex" : "none";
-    messageModal.style.display = "flex";
-}
-
-function closeMessage() {
-    messageModal.style.display = "none";
-    pendingMessageAction = null;
-}
-
-messageBtn.addEventListener("click", () => {
-    const action = pendingMessageAction;
-    closeMessage();
-    if (action) action();
-});
-
+playAgainBtn.addEventListener("click", () => { round=1; playerOneScoreValue=0; playerTwoScoreValue=0; playerOneScore.textContent="0"; playerTwoScore.textContent="0"; startRound(); });
+mainMenuBtn.addEventListener("click", () => { clearTimers(); showScreen(modeScreen); });
+exitGameBtn.addEventListener("click", () => showMessage("Are you sure you want to leave the game?", () => { clearTimers(); gameEnded=true; showScreen(welcomeScreen); }, true));
+function resetBoard() { board=["","","","","","","","",""]; boardCells.forEach(cell => { cell.textContent=""; cell.classList.remove("x","o"); }); }
+function createPlayer(name,symbol) { return {name,symbol}; }
+function showMessage(message,action=null,isConfirmation=false) { messageText.textContent=message; pendingMessageAction=action; messageBtn.textContent=isConfirmation?"Yes":"OK"; messageCancelBtn.style.display=isConfirmation?"inline-flex":"none"; messageModal.style.display="flex"; }
+function closeMessage() { messageModal.style.display="none"; pendingMessageAction=null; }
+messageBtn.addEventListener("click", () => { const action=pendingMessageAction; closeMessage(); if(action) action(); });
 messageCancelBtn.addEventListener("click", closeMessage);
