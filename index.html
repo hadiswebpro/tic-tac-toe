@@ -1,516 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="./favicon/favicon-16x16.png">
-
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="./favicon/favicon-32x32.png">
-
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="./favicon/apple-touch-icon.png">
-
-    <link rel="icon" type="image/png" sizes="192x192"
-        href="./favicon/android-chrome-192x192.png">
-
-    <link rel="icon" type="image/png" sizes="512x512"
-        href="./favicon/android-chrome-512x512.png">
-
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./favicon/android-chrome-512x512.png">
     <link rel="shortcut icon" href="./favicon/favicon.ico">
-
     <title>Tic Tac Toe</title>
-
     <link rel="stylesheet" href="./style.css">
-
 </head>
-
-
 <body>
-
-    <!-- =================================
-         WELCOME SCREEN
-    ================================== -->
-
     <section class="welcome-screen">
-
         <div class="welcome-content">
-
             <h1>Tic Tac Toe</h1>
-
             <h2>Let's Play!</h2>
-
-            <img
-                class="welcome-image"
-                src="./images/tic-tac-toe.png"
-                alt="Tic Tac Toe">
-
-            <button class="start-game-btn open-mode-btn">
-                Start Game
-            </button>
-
+            <img class="welcome-image" src="./images/tic-tac-toe.png" alt="Tic Tac Toe">
+            <button class="start-game-btn open-mode-btn">Start Game</button>
         </div>
-
     </section>
-
-
-
-    <!-- =================================
-         GAME MODE SCREEN
-    ================================== -->
 
     <section class="mode-screen">
-
-        <div class="mode-content">
-
+        <div class="screen-shell mode-content">
+            <button class="back-btn" data-back="welcome" aria-label="Back to welcome">←</button>
             <h2>Choose Game Mode</h2>
-
             <div class="mode-buttons">
-
-                <button
-                    class="game-mode-btn"
-                    data-mode="friend">
-
-                    With a Friend
-
-                </button>
-
-
-                <button
-                    class="game-mode-btn"
-                    data-mode="bot">
-
-                    With Bot
-
-                </button>
-
+                <button class="game-mode-btn" data-mode="friend">With a Friend</button>
+                <button class="game-mode-btn" data-mode="bot">With Bot</button>
             </div>
-
         </div>
-
     </section>
-
-
-
-    <!-- =================================
-         BOT DIFFICULTY SCREEN
-    ================================== -->
 
     <section class="difficulty-screen">
-
-        <div class="difficulty-content">
-
+        <div class="screen-shell difficulty-content">
+            <button class="back-btn" data-back="mode" aria-label="Back to game mode">←</button>
             <h2>Choose Difficulty</h2>
-
             <p>How challenging do you want the game to be?</p>
-
-
             <div class="difficulty-buttons">
-
-                <button
-                    class="difficulty-btn"
-                    data-difficulty="easy">
-
-                    <span class="difficulty-title">
-                        Easy
-                    </span>
-
-                    <span class="difficulty-description">
-                        The bot tries to win, but doesn't always block you.
-                    </span>
-
+                <button class="difficulty-btn" data-difficulty="easy">
+                    <span class="difficulty-title">Easy</span>
+                    <span class="difficulty-description">The bot makes random moves.</span>
                 </button>
-
-
-                <button
-                    class="difficulty-btn"
-                    data-difficulty="hard">
-
-                    <span class="difficulty-title">
-                        Hard
-                    </span>
-
-                    <span class="difficulty-description">
-                        The bot tries to win and blocks your winning moves.
-                    </span>
-
+                <button class="difficulty-btn" data-difficulty="hard">
+                    <span class="difficulty-title">Hard</span>
+                    <span class="difficulty-description">The bot tries to win and blocks your winning moves.</span>
                 </button>
-
             </div>
-
         </div>
-
     </section>
-
-
-
-    <!-- =================================
-         FRIEND SETUP
-    ================================== -->
 
     <section class="friend-setup">
-
-        <div class="setup-content">
-
+        <div class="screen-shell setup-content">
+            <button class="back-btn" data-back="mode" aria-label="Back to game mode">←</button>
             <h2>Player Setup</h2>
-
-
             <div class="player-input">
-
-                <label for="player-one-name">
-                    Player 1 Name
-                </label>
-
-                <input
-                    type="text"
-                    id="player-one-name"
-                    placeholder="Enter your name">
-
+                <label for="player-one-name">Player 1 Name</label>
+                <input type="text" id="player-one-name" placeholder="Enter your name" autocomplete="off">
             </div>
-
-
             <div class="player-input">
-
-                <label for="player-two-name">
-                    Player 2 Name
-                </label>
-
-                <input
-                    type="text"
-                    id="player-two-name"
-                    placeholder="Enter your friend's name">
-
+                <label for="player-two-name">Player 2 Name</label>
+                <input type="text" id="player-two-name" placeholder="Enter your friend's name" autocomplete="off">
             </div>
-
-
             <div class="symbol-selection">
-
                 <h3>Choose Your Symbol</h3>
-
                 <div class="symbol-buttons">
-
-                    <button
-                        class="symbol-btn"
-                        data-symbol="X">
-
-                        X
-
-                    </button>
-
-
-                    <button
-                        class="symbol-btn"
-                        data-symbol="O">
-
-                        O
-
-                    </button>
-
+                    <button class="symbol-btn" data-symbol="X">X</button>
+                    <button class="symbol-btn" data-symbol="O">O</button>
                 </div>
-
             </div>
-
-
-            <button class="start-game-btn">
-                Start Game
-            </button>
-
+            <button class="start-game-btn">Start Game</button>
         </div>
-
     </section>
-
-
-
-    <!-- =================================
-         BOT SETUP
-    ================================== -->
 
     <section class="bot-setup">
-
-        <div class="setup-content">
-
+        <div class="screen-shell setup-content">
+            <button class="back-btn" data-back="difficulty" aria-label="Back to difficulty">←</button>
             <h2>Player Setup</h2>
-
-
             <div class="player-input">
-
-                <label for="bot-player-name">
-                    Your Name
-                </label>
-
-                <input
-                    type="text"
-                    id="bot-player-name"
-                    placeholder="Enter your name">
-
+                <label for="bot-player-name">Your Name</label>
+                <input type="text" id="bot-player-name" placeholder="Enter your name" autocomplete="off">
             </div>
-
-
             <div class="symbol-selection">
-
                 <h3>Choose Your Symbol</h3>
-
                 <div class="symbol-buttons">
-
-                    <button
-                        class="symbol-btn"
-                        data-symbol="X">
-
-                        X
-
-                    </button>
-
-
-                    <button
-                        class="symbol-btn"
-                        data-symbol="O">
-
-                        O
-
-                    </button>
-
+                    <button class="symbol-btn" data-symbol="X">X</button>
+                    <button class="symbol-btn" data-symbol="O">O</button>
                 </div>
-
             </div>
-
-
-            <button class="start-game-btn">
-                Start Game
-            </button>
-
+            <button class="start-game-btn">Start Game</button>
         </div>
-
     </section>
-
-
-
-    <!-- =================================
-         COUNTDOWN SCREEN
-    ================================== -->
 
     <section class="countdown-screen">
-
         <div class="countdown-content">
-
-            <span id="countdown-number">
-                3
-            </span>
-
+            <span id="countdown-number">3</span>
         </div>
-
     </section>
-
-
-
-    <!-- =================================
-         GAME SCREEN
-    ================================== -->
 
     <section class="game-screen">
-
+        <button class="back-btn game-exit-btn" id="exit-game-btn" aria-label="Exit game">←</button>
         <div class="game-header">
-
-            <h2>
-                Round
-                <span id="round-number">1</span>
-            </h2>
-
+            <span class="match-label">Best of 3</span>
+            <h2>Round <span id="round-number">1</span> / 3</h2>
         </div>
-
-
         <div class="game">
-
-            <!-- PLAYER ONE -->
-
             <div class="player-board">
-
-                <h3 id="player-one-name-display">
-                    Player 1
-                </h3>
-
-                <span id="player-one-symbol">
-                    X
-                </span>
-
-                <span id="player-one-score">
-                    0
-                </span>
-
+                <h3 id="player-one-name-display">Player 1</h3>
+                <span id="player-one-symbol">X</span>
+                <span id="player-one-score">0</span>
             </div>
-
-
-            <!-- GAME BOARD -->
-
             <div class="gameboard">
-
-                <button
-                    class="board-cell"
-                    data-index="0">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="1">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="2">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="3">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="4">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="5">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="6">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="7">
-                </button>
-
-                <button
-                    class="board-cell"
-                    data-index="8">
-                </button>
-
+                <button class="board-cell" data-index="0" aria-label="Cell 1"></button>
+                <button class="board-cell" data-index="1" aria-label="Cell 2"></button>
+                <button class="board-cell" data-index="2" aria-label="Cell 3"></button>
+                <button class="board-cell" data-index="3" aria-label="Cell 4"></button>
+                <button class="board-cell" data-index="4" aria-label="Cell 5"></button>
+                <button class="board-cell" data-index="5" aria-label="Cell 6"></button>
+                <button class="board-cell" data-index="6" aria-label="Cell 7"></button>
+                <button class="board-cell" data-index="7" aria-label="Cell 8"></button>
+                <button class="board-cell" data-index="8" aria-label="Cell 9"></button>
             </div>
-
-
-            <!-- PLAYER TWO -->
-
             <div class="player-board">
-
-                <h3 id="player-two-name-display">
-                    Player 2
-                </h3>
-
-                <span id="player-two-symbol">
-                    O
-                </span>
-
-                <span id="player-two-score">
-                    0
-                </span>
-
+                <h3 id="player-two-name-display">Player 2</h3>
+                <span id="player-two-symbol">O</span>
+                <span id="player-two-score">0</span>
             </div>
-
         </div>
-
-
-        <!-- ROUND RESULT -->
-
-        <div
-            class="round-result"
-            id="round-result">
-
-            <p id="round-result-message"></p>
-
-            <button class="next-round-btn">
-                Next Round
-            </button>
-
+        <div class="round-result" id="round-result">
+            <div class="round-result-box">
+                <p id="round-result-message"></p>
+                <button class="next-round-btn">Next Round</button>
+            </div>
         </div>
-
     </section>
-
-
-
-    <!-- =================================
-         RESULT SCREEN
-    ================================== -->
 
     <section class="result-screen">
-
         <div class="result-content">
-
-            <h2>Game Over!</h2>
-
-            <p>
-                <span id="final-player-one-name">
-                    Player 1
-                </span>:
-                <span id="final-player-one-score">
-                    0
-                </span>
-            </p>
-
-
-            <p>
-                <span id="final-player-two-name">
-                    Player 2
-                </span>:
-                <span id="final-player-two-score">
-                    0
-                </span>
-            </p>
-
-
-            <h3 id="final-result">
-                Winner
-            </h3>
-
-
+            <h2>Match Over!</h2>
+            <p><span id="final-player-one-name">Player 1</span><span id="final-player-one-score">0</span></p>
+            <p><span id="final-player-two-name">Player 2</span><span id="final-player-two-score">0</span></p>
+            <h3 id="final-result">Winner</h3>
             <div class="result-buttons">
-
-                <button class="play-again-btn">
-                    Play Again
-                </button>
-
-                <button class="main-menu-btn">
-                    Main Menu
-                </button>
-
+                <button class="play-again-btn">Play Again</button>
+                <button class="main-menu-btn">Main Menu</button>
             </div>
-
         </div>
-
     </section>
 
-
-
-    <!-- =================================
-         MESSAGE MODAL
-    ================================== -->
-
-    <div
-        class="message-modal"
-        id="message-modal">
-
+    <div class="message-modal" id="message-modal">
         <div class="message-box">
-
             <p id="message-text"></p>
-
-            <button id="message-btn">
-                OK
-            </button>
-
+            <div class="message-actions">
+                <button class="message-btn message-cancel-btn" id="message-cancel-btn">Cancel</button>
+                <button class="message-btn" id="message-btn">OK</button>
+            </div>
         </div>
-
     </div>
 
-
-
     <script src="./script.js"></script>
-
 </body>
-
 </html>
