@@ -9,7 +9,10 @@ const difficultyBtns =
     document.querySelectorAll(".difficulty-btn");
 
 const startGameBtns =
-    document.querySelectorAll(".start-game-btn");
+    document.querySelectorAll(".setup-content .start-game-btn");
+
+const openModeBtn =
+    document.querySelector(".open-mode-btn");
 
 const boardCells =
     document.querySelectorAll(".board-cell");
@@ -82,6 +85,26 @@ const roundResultMessage =
 
 
 // =========================
+// FINAL RESULT DISPLAY
+// =========================
+
+const finalPlayerOneName =
+    document.getElementById("final-player-one-name");
+
+const finalPlayerTwoName =
+    document.getElementById("final-player-two-name");
+
+const finalPlayerOneScore =
+    document.getElementById("final-player-one-score");
+
+const finalPlayerTwoScore =
+    document.getElementById("final-player-two-score");
+
+const finalResult =
+    document.getElementById("final-result");
+
+
+// =========================
 // MESSAGE MODAL
 // =========================
 
@@ -140,30 +163,47 @@ let board = [
 // =========================
 
 let gameMode = null;
-
 let difficulty = null;
-
 let selectedSymbol = null;
-
 let playerOneName = null;
-
 let playerTwoName = null;
-
 let round = 1;
-
 let currentPlayer = null;
-
 let playerOne = null;
-
 let playerTwo = null;
-
 let winner = null;
-
 let playerOneScoreValue = 0;
-
 let playerTwoScoreValue = 0;
-
 let gameEnded = false;
+
+const WINNING_SCORE = 3;
+
+
+// =========================
+// INITIAL SCREEN STATE
+// =========================
+
+welcomeScreen.style.display = "block";
+modeScreen.style.display = "none";
+friendSetup.style.display = "none";
+botSetup.style.display = "none";
+difficultyScreen.style.display = "none";
+countdownScreen.style.display = "none";
+gameScreen.style.display = "none";
+resultScreen.style.display = "none";
+roundResult.style.display = "none";
+messageModal.style.display = "none";
+
+
+// =========================
+// OPEN GAME MODE
+// =========================
+
+openModeBtn.addEventListener("click", function () {
+
+    welcomeScreen.style.display = "none";
+    modeScreen.style.display = "block";
+});
 
 
 // =========================
@@ -174,21 +214,21 @@ gameModeBtns.forEach(button => {
 
     button.addEventListener("click", function () {
 
-        const mode = button.dataset.mode;
-
-        gameMode = mode;
+        gameMode = button.dataset.mode;
 
         modeScreen.style.display = "none";
 
-        if (mode === "friend") {
+        if (gameMode === "friend") {
 
             friendSetup.style.display = "block";
             botSetup.style.display = "none";
+            difficultyScreen.style.display = "none";
 
         } else {
 
-            botSetup.style.display = "block";
             friendSetup.style.display = "none";
+            botSetup.style.display = "none";
+            difficultyScreen.style.display = "block";
         }
     });
 });
@@ -202,12 +242,15 @@ difficultyBtns.forEach(button => {
 
     button.addEventListener("click", function () {
 
+        difficultyBtns.forEach(btn => {
+            btn.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+
         difficulty = button.dataset.difficulty;
 
-        console.log("Difficulty:", difficulty);
-
         difficultyScreen.style.display = "none";
-
         botSetup.style.display = "block";
     });
 });
@@ -221,9 +264,16 @@ symbolBtns.forEach(button => {
 
     button.addEventListener("click", function () {
 
-        selectedSymbol = button.dataset.symbol;
+        const setup = button.closest(".setup-content");
+        const setupSymbols = setup.querySelectorAll(".symbol-btn");
 
-        console.log("Selected symbol:", selectedSymbol);
+        setupSymbols.forEach(btn => {
+            btn.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+
+        selectedSymbol = button.dataset.symbol;
     });
 });
 
@@ -237,11 +287,40 @@ startGameBtns.forEach(button => {
     button.addEventListener("click", function () {
 
         // -------------------------
+        // VALIDATION
+        // -------------------------
+
+        if (!gameMode) {
+            showMessage("Please choose a game mode first.");
+            return;
+        }
+
+        if (!selectedSymbol) {
+            showMessage("Please choose X or O.");
+            return;
+        }
+
+
+        // -------------------------
         // PLAYER ONE
         // -------------------------
 
-        playerOneName =
-            playerOneNameInput.value.trim();
+        if (gameMode === "bot") {
+
+            playerOneName =
+                botPlayerNameInput.value.trim();
+
+        } else {
+
+            playerOneName =
+                playerOneNameInput.value.trim();
+        }
+
+        if (!playerOneName) {
+            showMessage("Please enter your name.");
+            return;
+        }
+
 
         // -------------------------
         // PLAYER TWO
@@ -252,98 +331,131 @@ startGameBtns.forEach(button => {
             playerTwoName =
                 playerTwoNameInput.value.trim();
 
+            if (!playerTwoName) {
+                showMessage("Please enter Player 2 name.");
+                return;
+            }
+
         } else {
 
             playerTwoName = "Bot";
+
+            if (!difficulty) {
+                showMessage("Please choose a difficulty first.");
+                return;
+            }
         }
 
 
+        // -------------------------
+        // PLAYER SYMBOLS
+        // -------------------------
 
-        const secondSymbol =selectedSymbol === "X"? "O": "X";
-
-        playerOne =
-            createPlayer(
-                playerOneName,
-                selectedSymbol
-            );
-
-        playerTwo =
-            createPlayer(
-                playerTwoName,
-                secondSymbol
-            );
+        const secondSymbol =
+            selectedSymbol === "X" ? "O" : "X";
 
 
-        board = [
-            "", "", "",
-            "", "", "",
-            "", "", ""
-        ];
+        // -------------------------
+        // CREATE PLAYERS
+        // -------------------------
+
+        playerOne = createPlayer(
+            playerOneName,
+            selectedSymbol
+        );
+
+        playerTwo = createPlayer(
+            playerTwoName,
+            secondSymbol
+        );
+
+
+        // -------------------------
+        // RESET GAME
+        // -------------------------
+
+        round = 1;
+        playerOneScoreValue = 0;
+        playerTwoScoreValue = 0;
+        playerOneScore.textContent = "0";
+        playerTwoScore.textContent = "0";
+
+        resetBoard();
 
         currentPlayer = playerOne;
-
         winner = null;
-
         gameEnded = false;
 
 
-        boardCells.forEach(cell => {
-
-            cell.textContent = "";
-        });
-
+        // -------------------------
+        // UPDATE UI
+        // -------------------------
 
         playerOneNameDisplay.textContent = playerOne.name;
-
         playerTwoNameDisplay.textContent = playerTwo.name;
 
         playerOneSymbol.textContent = playerOne.symbol;
-
         playerTwoSymbol.textContent = playerTwo.symbol;
 
-        roundNumber.textContent =`Round ${round}`;
+        roundNumber.textContent = `Round ${round}`;
 
 
-        countdownScreen.style.display = "block";
+        // -------------------------
+        // HIDE SETUP
+        // -------------------------
 
-        gameScreen.style.display = "none";
-
-
-        let count = 3;
-
-        countdownNumber.textContent = count;
-
-        const timer = setInterval(() => {
-
-            if (count > 1) {
-
-                count--;
-
-                countdownNumber.textContent =
-                    count;
-
-            } else {
-
-                countdownNumber.textContent =
-                    "GO!";
-
-                clearInterval(timer);
+        friendSetup.style.display = "none";
+        botSetup.style.display = "none";
+        difficultyScreen.style.display = "none";
 
 
-                setTimeout(() => {
+        // -------------------------
+        // COUNTDOWN
+        // -------------------------
 
-                    countdownScreen.style.display =
-                        "none";
-
-                    gameScreen.style.display =
-                        "block";
-
-                }, 500);
-            }
-
-        }, 1000);
+        startCountdown();
     });
 });
+
+
+// =========================
+// START COUNTDOWN
+// =========================
+
+function startCountdown() {
+
+    countdownScreen.style.display = "block";
+    gameScreen.style.display = "none";
+    roundResult.style.display = "none";
+
+    let count = 3;
+
+    countdownNumber.textContent = count;
+
+    const timer = setInterval(() => {
+
+        if (count > 1) {
+
+            count--;
+            countdownNumber.textContent = count;
+
+        } else {
+
+            countdownNumber.textContent = "GO!";
+
+            clearInterval(timer);
+
+            setTimeout(() => {
+
+                countdownScreen.style.display = "none";
+                gameScreen.style.display = "block";
+                currentPlayer = playerOne;
+
+            }, 500);
+        }
+
+    }, 1000);
+}
 
 
 // =========================
@@ -354,8 +466,7 @@ boardCells.forEach(cell => {
 
     cell.addEventListener("click", function () {
 
-       
-        if (gameEnded) {
+        if (gameEnded || !currentPlayer) {
             return;
         }
 
@@ -366,9 +477,7 @@ boardCells.forEach(cell => {
             return;
         }
 
-
         const index = Number(cell.dataset.index);
-
 
         Game(index);
     });
@@ -381,42 +490,49 @@ boardCells.forEach(cell => {
 
 function Game(index) {
 
-    
-    if (board[index] !== "") {
+    if (gameEnded || board[index] !== "") {
         return;
     }
 
-
-   
     board[index] = currentPlayer.symbol;
 
-    boardCells[index].textContent = currentPlayer.symbol;
+    boardCells[index].textContent =
+        currentPlayer.symbol;
+
+    boardCells[index].classList.remove("x", "o");
+    boardCells[index].classList.add(
+        currentPlayer.symbol.toLowerCase()
+    );
 
 
+    // -------------------------
+    // CHECK WINNER
+    // -------------------------
 
     const winnerSymbol = checkWinner();
 
-
     if (winnerSymbol !== null) {
-
         endRound(winnerSymbol);
-
         return;
     }
 
 
+    // -------------------------
+    // CHECK DRAW
+    // -------------------------
 
-    const isBoardFull = board.every(cell => cell !== "");
-
+    const isBoardFull =
+        board.every(cell => cell !== "");
 
     if (isBoardFull) {
-
         endRound("draw");
-
         return;
     }
 
 
+    // -------------------------
+    // CHANGE PLAYER
+    // -------------------------
 
     currentPlayer =
         currentPlayer === playerOne
@@ -424,6 +540,9 @@ function Game(index) {
             : playerOne;
 
 
+    // -------------------------
+    // BOT MOVE
+    // -------------------------
 
     if (
         gameMode === "bot" &&
@@ -431,9 +550,7 @@ function Game(index) {
     ) {
 
         setTimeout(() => {
-
             makeBotMove();
-
         }, 500);
     }
 }
@@ -446,27 +563,17 @@ function Game(index) {
 function checkWinner() {
 
     const winningCombinations = [
-
         [0, 1, 2],
-
         [3, 4, 5],
-
         [6, 7, 8],
-
         [0, 3, 6],
-
         [1, 4, 7],
-
         [2, 5, 8],
-
         [0, 4, 8],
-
         [2, 4, 6]
     ];
 
-
-    for (const combination
-        of winningCombinations) {
+    for (const combination of winningCombinations) {
 
         const [a, b, c] = combination;
 
@@ -475,11 +582,9 @@ function checkWinner() {
             board[a] === board[b] &&
             board[b] === board[c]
         ) {
-
             return board[a];
         }
     }
-
 
     return null;
 }
@@ -497,21 +602,15 @@ function makeBotMove() {
 
     let move;
 
-
     if (difficulty === "hard") {
-
         move = getHardBotMove();
-
     } else {
-
         move = getEasyBotMove();
     }
-
 
     if (move === null) {
         return;
     }
-
 
     Game(move);
 }
@@ -525,14 +624,12 @@ function getEasyBotMove() {
 
     const emptyCells = getEmptyCells();
 
-
     if (emptyCells.length === 0) {
-
         return null;
     }
 
-
-    const randomIndex = Math.floor( Math.random() * emptyCells.length);
+    const randomIndex =
+        Math.floor(Math.random() * emptyCells.length);
 
     return emptyCells[randomIndex];
 }
@@ -544,23 +641,19 @@ function getEasyBotMove() {
 
 function getHardBotMove() {
 
-
-    const winningMove = findWinningMove(playerTwo.symbol);
+    const winningMove =
+        findWinningMove(playerTwo.symbol);
 
     if (winningMove !== null) {
-
         return winningMove;
     }
 
-
-
-    const blockingMove = findWinningMove( playerOne.symbol);
+    const blockingMove =
+        findWinningMove(playerOne.symbol);
 
     if (blockingMove !== null) {
-
         return blockingMove;
     }
-
 
     return getEasyBotMove();
 }
@@ -574,7 +667,6 @@ function findWinningMove(symbol) {
 
     const emptyCells = getEmptyCells();
 
-
     for (const index of emptyCells) {
 
         board[index] = symbol;
@@ -584,11 +676,9 @@ function findWinningMove(symbol) {
         board[index] = "";
 
         if (winnerSymbol === symbol) {
-
             return index;
         }
     }
-
 
     return null;
 }
@@ -602,15 +692,12 @@ function getEmptyCells() {
 
     const emptyCells = [];
 
-
     board.forEach((cell, index) => {
 
         if (cell === "") {
-
             emptyCells.push(index);
         }
     });
-
 
     return emptyCells;
 }
@@ -624,13 +711,11 @@ function endRound(result) {
 
     gameEnded = true;
 
-
     if (result === "draw") {
 
         winner = null;
 
         showRoundResult("It's a Draw!");
-
         return;
     }
 
@@ -640,24 +725,39 @@ function endRound(result) {
         winner = playerOne;
 
         playerOneScoreValue++;
+        playerOneScore.textContent =
+            playerOneScoreValue;
 
-        playerOneScore.textContent = playerOneScoreValue;
+        showRoundResult(
+            `${playerOne.name} Wins!`
+        );
 
-        showRoundResult(`${playerOne.name} Wins!`);
-
-        return;
-    }
-
-
-    if (result === playerTwo.symbol) {
+    } else if (result === playerTwo.symbol) {
 
         winner = playerTwo;
 
         playerTwoScoreValue++;
+        playerTwoScore.textContent =
+            playerTwoScoreValue;
 
-        playerTwoScore.textContent = playerTwoScoreValue;
+        showRoundResult(
+            `${playerTwo.name} Wins!`
+        );
+    }
 
-        showRoundResult(`${playerTwo.name} Wins!`);
+
+    // -------------------------
+    // GAME OVER
+    // -------------------------
+
+    if (
+        playerOneScoreValue >= WINNING_SCORE ||
+        playerTwoScoreValue >= WINNING_SCORE
+    ) {
+
+        setTimeout(() => {
+            showFinalResult();
+        }, 900);
     }
 }
 
@@ -670,7 +770,58 @@ function showRoundResult(message) {
 
     roundResultMessage.textContent = message;
 
-    roundResult.style.display ="block";
+    roundResult.style.display = "block";
+}
+
+
+// =========================
+// SHOW FINAL RESULT
+// =========================
+
+function showFinalResult() {
+
+    gameEnded = true;
+
+    roundResult.style.display = "none";
+    gameScreen.style.display = "none";
+    countdownScreen.style.display = "none";
+
+
+    finalPlayerOneName.textContent =
+        playerOne.name;
+
+    finalPlayerTwoName.textContent =
+        playerTwo.name;
+
+    finalPlayerOneScore.textContent =
+        playerOneScoreValue;
+
+    finalPlayerTwoScore.textContent =
+        playerTwoScoreValue;
+
+
+    if (
+        playerOneScoreValue > playerTwoScoreValue
+    ) {
+
+        finalResult.textContent =
+            `${playerOne.name} Wins the Game!`;
+
+    } else if (
+        playerTwoScoreValue > playerOneScoreValue
+    ) {
+
+        finalResult.textContent =
+            `${playerTwo.name} Wins the Game!`;
+
+    } else {
+
+        finalResult.textContent =
+            "It's a Draw!";
+    }
+
+
+    resultScreen.style.display = "block";
 }
 
 
@@ -680,35 +831,26 @@ function showRoundResult(message) {
 
 nextRoundBtn.addEventListener("click", function () {
 
-        round++;
-
-        board = [
-            "", "", "",
-            "", "", "",
-            "", "", ""
-        ];
-
-        gameEnded = false;
-
-        winner = null;
-
-        currentPlayer = playerOne;
-
-
-        boardCells.forEach(cell => {
-
-            cell.textContent = "";
-        });
-
-
-        roundNumber.textContent =
-            `Round ${round}`;
-
-
-        roundResult.style.display =
-            "none";
+    if (
+        playerOneScoreValue >= WINNING_SCORE ||
+        playerTwoScoreValue >= WINNING_SCORE
+    ) {
+        return;
     }
-);
+
+    round++;
+
+    resetBoard();
+
+    gameEnded = false;
+    winner = null;
+    currentPlayer = playerOne;
+
+    roundNumber.textContent =
+        `Round ${round}`;
+
+    startCountdown();
+});
 
 
 // =========================
@@ -717,41 +859,27 @@ nextRoundBtn.addEventListener("click", function () {
 
 playAgainBtn.addEventListener("click", function () {
 
-        round = 1;
+    round = 1;
 
-        playerOneScoreValue = 0;
+    playerOneScoreValue = 0;
+    playerTwoScoreValue = 0;
 
-        playerTwoScoreValue = 0;
+    playerOneScore.textContent = "0";
+    playerTwoScore.textContent = "0";
 
-        playerOneScore.textContent = "0";
+    resultScreen.style.display = "none";
 
-        playerTwoScore.textContent = "0";
+    resetBoard();
 
+    currentPlayer = playerOne;
+    gameEnded = false;
+    winner = null;
 
-        resultScreen.style.display =
-            "none";
+    roundNumber.textContent =
+        `Round ${round}`;
 
-        gameScreen.style.display =
-            "block";
-
-
-        board = [
-            "", "", "",
-            "", "", "",
-            "", "", ""
-        ];
-
-        currentPlayer = playerOne;
-
-        gameEnded = false;
-
-
-        boardCells.forEach(cell => {
-
-            cell.textContent = "";
-        });
-    }
-);
+    startCountdown();
+});
 
 
 // =========================
@@ -760,22 +888,37 @@ playAgainBtn.addEventListener("click", function () {
 
 mainMenuBtn.addEventListener("click", function () {
 
-        gameScreen.style.display =
-            "none";
+    gameScreen.style.display = "none";
+    resultScreen.style.display = "none";
+    countdownScreen.style.display = "none";
+    roundResult.style.display = "none";
+    friendSetup.style.display = "none";
+    botSetup.style.display = "none";
+    difficultyScreen.style.display = "none";
 
-        resultScreen.style.display =
-            "none";
+    modeScreen.style.display = "block";
+});
 
-        friendSetup.style.display =
-            "none";
 
-        botSetup.style.display =
-            "none";
+// =========================
+// RESET BOARD
+// =========================
 
-        modeScreen.style.display =
-            "block";
-    }
-);
+function resetBoard() {
+
+    board = [
+        "", "", "",
+        "", "", "",
+        "", "", ""
+    ];
+
+    boardCells.forEach(cell => {
+
+        cell.textContent = "";
+
+        cell.classList.remove("x", "o");
+    });
+}
 
 
 // =========================
@@ -798,7 +941,6 @@ function createPlayer(name, symbol) {
 function showMessage(message) {
 
     messageText.textContent = message;
-
     messageModal.style.display = "block";
 }
 
@@ -809,6 +951,5 @@ function showMessage(message) {
 
 messageBtn.addEventListener("click", function () {
 
-        messageModal.style.display = "none";
-    }
-);
+    messageModal.style.display = "none";
+});
