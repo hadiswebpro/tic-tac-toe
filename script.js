@@ -57,9 +57,52 @@ let gameEnded = false;
 let countdownTimer = null;
 let countdownTimeout = null;
 let botTimer = null;
+let roundResultTimer = null;
+let finalResultTimer = null;
 let pendingMessageAction = null;
 
 const TOTAL_ROUNDS = 3;
+const RESULT_REVEAL_DELAY = 1000;
+const FINAL_RESULT_DELAY = 1200;
+
+const mobileBackStyles = document.createElement("style");
+mobileBackStyles.textContent = `
+@media (max-width: 700px) {
+    .screen-shell .back-btn {
+        width: 38px;
+        height: 38px;
+        top: -6px;
+        left: 0;
+        font-size: 1.15rem;
+    }
+
+    .game-screen .game-exit-btn {
+        width: 38px;
+        height: 38px;
+        top: 8px;
+        left: 0;
+        font-size: 1.15rem;
+    }
+}
+
+@media (max-width: 460px) {
+    .screen-shell .back-btn {
+        width: 34px;
+        height: 34px;
+        top: -10px;
+        left: 0;
+        font-size: 1rem;
+    }
+
+    .game-screen .game-exit-btn {
+        width: 34px;
+        height: 34px;
+        top: 5px;
+        font-size: 1rem;
+    }
+}
+`;
+document.head.appendChild(mobileBackStyles);
 
 welcomeScreen.style.display = "block";
 modeScreen.style.display = "none";
@@ -93,9 +136,13 @@ function clearTimers() {
     clearInterval(countdownTimer);
     clearTimeout(countdownTimeout);
     clearTimeout(botTimer);
+    clearTimeout(roundResultTimer);
+    clearTimeout(finalResultTimer);
     countdownTimer = null;
     countdownTimeout = null;
     botTimer = null;
+    roundResultTimer = null;
+    finalResultTimer = null;
 }
 
 openModeBtn.addEventListener("click", () => showScreen(modeScreen));
@@ -279,24 +326,33 @@ function endRound(result) {
     clearTimeout(botTimer);
     botTimer = null;
 
+    let message;
+
     if (result === "draw") {
         winner = null;
-        showRoundResult("It's a Draw!");
+        message = "It's a Draw!";
     } else if (result === playerOne.symbol) {
         winner = playerOne;
         playerOneScoreValue++;
         playerOneScore.textContent = playerOneScoreValue;
-        showRoundResult(`${playerOne.name} Wins the Round!`);
+        message = `${playerOne.name} Wins the Round!`;
     } else {
         winner = playerTwo;
         playerTwoScoreValue++;
         playerTwoScore.textContent = playerTwoScoreValue;
-        showRoundResult(`${playerTwo.name} Wins the Round!`);
+        message = `${playerTwo.name} Wins the Round!`;
     }
 
-    if (round >= TOTAL_ROUNDS) {
-        setTimeout(showFinalResult, 700);
-    }
+    // Keep the completed board visible briefly before showing the result overlay.
+    roundResultTimer = setTimeout(() => {
+        showRoundResult(message);
+
+        // Round 3 is the end of the match. Give the player time to see the
+        // round result before moving to the final match screen.
+        if (round >= TOTAL_ROUNDS) {
+            finalResultTimer = setTimeout(showFinalResult, FINAL_RESULT_DELAY);
+        }
+    }, RESULT_REVEAL_DELAY);
 }
 
 function showRoundResult(message) {
