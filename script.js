@@ -9,11 +9,9 @@ const mainMenuBtn = document.querySelector(".main-menu-btn");
 const symbolBtns = document.querySelectorAll(".symbol-btn");
 const backBtns = document.querySelectorAll(".back-btn:not(.game-exit-btn)");
 const exitGameBtn = document.getElementById("exit-game-btn");
-
 const playerOneNameInput = document.getElementById("player-one-name");
 const playerTwoNameInput = document.getElementById("player-two-name");
 const botPlayerNameInput = document.getElementById("bot-player-name");
-
 const playerOneNameDisplay = document.getElementById("player-one-name-display");
 const playerTwoNameDisplay = document.getElementById("player-two-name-display");
 const playerOneSymbol = document.getElementById("player-one-symbol");
@@ -24,18 +22,15 @@ const roundNumber = document.getElementById("round-number");
 const countdownNumber = document.getElementById("countdown-number");
 const roundResult = document.getElementById("round-result");
 const roundResultMessage = document.getElementById("round-result-message");
-
 const finalPlayerOneName = document.getElementById("final-player-one-name");
 const finalPlayerTwoName = document.getElementById("final-player-two-name");
 const finalPlayerOneScore = document.getElementById("final-player-one-score");
 const finalPlayerTwoScore = document.getElementById("final-player-two-score");
 const finalResult = document.getElementById("final-result");
-
 const messageModal = document.getElementById("message-modal");
 const messageText = document.getElementById("message-text");
 const messageBtn = document.getElementById("message-btn");
 const messageCancelBtn = document.getElementById("message-cancel-btn");
-
 const welcomeScreen = document.querySelector(".welcome-screen");
 const modeScreen = document.querySelector(".mode-screen");
 const friendSetup = document.querySelector(".friend-setup");
@@ -103,18 +98,12 @@ function clearTimers() {
     botTimer = null;
 }
 
-openModeBtn.addEventListener("click", () => {
-    showScreen(modeScreen);
-});
+openModeBtn.addEventListener("click", () => showScreen(modeScreen));
 
 gameModeBtns.forEach(button => {
     button.addEventListener("click", () => {
         gameMode = button.dataset.mode;
-        if (gameMode === "friend") {
-            showScreen(friendSetup);
-        } else {
-            showScreen(difficultyScreen);
-        }
+        showScreen(gameMode === "friend" ? friendSetup : difficultyScreen);
     });
 });
 
@@ -150,10 +139,7 @@ startGameBtns.forEach(button => {
         if (!gameMode) return showMessage("Please choose a game mode first.");
         if (!selectedSymbol) return showMessage("Please choose X or O.");
 
-        playerOneName = gameMode === "bot"
-            ? botPlayerNameInput.value.trim()
-            : playerOneNameInput.value.trim();
-
+        playerOneName = gameMode === "bot" ? botPlayerNameInput.value.trim() : playerOneNameInput.value.trim();
         if (!playerOneName) return showMessage("Please enter your name.");
 
         if (gameMode === "friend") {
@@ -167,7 +153,6 @@ startGameBtns.forEach(button => {
         const secondSymbol = selectedSymbol === "X" ? "O" : "X";
         playerOne = createPlayer(playerOneName, selectedSymbol);
         playerTwo = createPlayer(playerTwoName, secondSymbol);
-
         round = 1;
         playerOneScoreValue = 0;
         playerTwoScoreValue = 0;
@@ -179,7 +164,6 @@ startGameBtns.forEach(button => {
         playerTwoSymbol.textContent = playerTwo.symbol;
         winner = null;
         gameEnded = false;
-
         startRound();
     });
 });
@@ -228,15 +212,8 @@ function Game(index) {
     boardCells[index].classList.add(currentPlayer.symbol.toLowerCase());
 
     const winnerSymbol = checkWinner();
-    if (winnerSymbol !== null) {
-        endRound(winnerSymbol);
-        return;
-    }
-
-    if (board.every(cell => cell !== "")) {
-        endRound("draw");
-        return;
-    }
+    if (winnerSymbol !== null) return endRound(winnerSymbol);
+    if (board.every(cell => cell !== "")) return endRound("draw");
 
     currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
 
@@ -253,18 +230,14 @@ function checkWinner() {
     ];
 
     for (const [a, b, c] of winningCombinations) {
-        if (board[a] && board[a] === board[b] && board[b] === board[c]) {
-            return board[a];
-        }
+        if (board[a] && board[a] === board[b] && board[b] === board[c]) return board[a];
     }
-
     return null;
 }
 
 function makeBotMove() {
     botTimer = null;
     if (gameEnded || currentPlayer !== playerTwo) return;
-
     const move = difficulty === "hard" ? getHardBotMove() : getEasyBotMove();
     if (move !== null) Game(move);
 }
@@ -278,12 +251,9 @@ function getEasyBotMove() {
 function getHardBotMove() {
     const winningMove = findWinningMove(playerTwo.symbol);
     if (winningMove !== null) return winningMove;
-
     const blockingMove = findWinningMove(playerOne.symbol);
     if (blockingMove !== null) return blockingMove;
-
     if (board[4] === "") return 4;
-
     return getEasyBotMove();
 }
 
@@ -312,10 +282,7 @@ function endRound(result) {
     if (result === "draw") {
         winner = null;
         showRoundResult("It's a Draw!");
-        return;
-    }
-
-    if (result === playerOne.symbol) {
+    } else if (result === playerOne.symbol) {
         winner = playerOne;
         playerOneScoreValue++;
         playerOneScore.textContent = playerOneScoreValue;
@@ -359,7 +326,6 @@ function showFinalResult() {
     } else {
         finalResult.textContent = "The Match Ends in a Draw!";
     }
-
     showScreen(resultScreen);
 }
 
