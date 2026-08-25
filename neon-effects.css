@@ -1,0 +1,229 @@
+/* =========================================================
+   NEON REFERENCE VISUAL LAYER
+   IMPORTANT: visual effects only.
+   No width, height, margin, padding, gap, grid, flex or breakpoint rules.
+   The existing responsive/layout CSS remains untouched.
+========================================================= */
+
+:root {
+    --reference-neon: 0 0 8px rgba(53,255,117,.85), 0 0 22px rgba(53,255,117,.5), 0 0 45px rgba(53,255,117,.2);
+    --reference-glass: linear-gradient(145deg, rgba(17,42,26,.72), rgba(2,13,7,.92));
+}
+
+body {
+    background-image:
+        radial-gradient(circle at 50% -10%, rgba(42,255,105,.16), transparent 35%),
+        radial-gradient(circle at 8% 90%, rgba(22,140,60,.08), transparent 30%),
+        radial-gradient(circle at 92% 70%, rgba(71,255,119,.06), transparent 28%),
+        linear-gradient(180deg,#020a05 0%,#010603 100%);
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 260px;
+    height: 260px;
+    left: 50%;
+    top: 48%;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+    background: rgba(43,255,105,.055);
+    filter: blur(70px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Decorative stars / neon particles */
+.welcome-screen::before,
+.mode-screen::before,
+.difficulty-screen::before,
+.friend-setup::before,
+.bot-setup::before,
+.countdown-screen::before,
+.game-screen::before,
+.result-screen::before {
+    content: "✦     ·     ✦       ·       ✦     ·     ✦";
+    position: absolute;
+    top: 7%;
+    left: 4%;
+    right: 4%;
+    color: rgba(100,255,146,.65);
+    font-size: 14px;
+    letter-spacing: 20px;
+    line-height: 3;
+    pointer-events: none;
+    text-shadow: var(--reference-neon);
+    opacity: .65;
+    animation: referenceStars 7s ease-in-out infinite;
+}
+
+.welcome-content h1 {
+    text-shadow: 0 0 7px rgba(255,255,255,.25), 0 0 17px rgba(53,255,117,.55), 0 0 38px rgba(53,255,117,.22);
+    animation: referenceTitleGlow 3.5s ease-in-out infinite;
+}
+
+.welcome-content h1::after,
+.mode-content h2::after,
+.difficulty-content h2::after,
+.setup-content h2::after,
+.result-content h2::after {
+    box-shadow: var(--reference-neon);
+}
+
+.welcome-content h2,
+.match-label,
+.difficulty-title,
+.player-input label,
+#round-number {
+    text-shadow: var(--reference-neon);
+}
+
+.welcome-image {
+    filter: drop-shadow(0 0 9px rgba(53,255,117,.8)) drop-shadow(0 0 25px rgba(53,255,117,.4));
+    animation: float 3.5s ease-in-out infinite, referenceImageGlow 2.8s ease-in-out infinite;
+}
+
+/* Glass / reflective cards */
+.game-mode-btn,
+.difficulty-btn,
+.setup-content,
+.player-board,
+.gameboard,
+.board-cell,
+.result-content,
+.message-box {
+    background: var(--reference-glass);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -22px 35px rgba(0,0,0,.15), 0 12px 35px rgba(0,0,0,.3);
+    backdrop-filter: blur(8px);
+}
+
+.game-mode-btn::before,
+.game-mode-btn::after {
+    content: "";
+}
+
+.game-mode-btn:hover,
+.difficulty-btn:hover,
+.difficulty-btn.selected,
+.player-board:hover {
+    border-color: var(--green);
+    box-shadow: var(--reference-neon), inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+/* Reflective input / symbol surfaces */
+.player-input input,
+.symbol-btn {
+    background: linear-gradient(145deg, rgba(20,42,28,.82), rgba(4,16,9,.94));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -10px 18px rgba(0,0,0,.14);
+}
+
+.player-input input:focus {
+    box-shadow: 0 0 0 3px rgba(53,255,117,.09), var(--reference-neon), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.symbol-btn:hover,
+.symbol-btn.selected {
+    box-shadow: 0 0 8px currentColor, 0 0 22px currentColor, inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+/* Stronger X / O neon */
+.board-cell.x {
+    text-shadow: 0 0 8px rgba(255,63,82,.95), 0 0 24px rgba(255,63,82,.55);
+}
+
+.board-cell.o,
+.symbol-btn[data-symbol="O"] {
+    text-shadow: var(--reference-neon);
+}
+
+.board-cell:hover {
+    box-shadow: inset 0 0 16px rgba(53,255,117,.1), 0 0 10px rgba(53,255,117,.4);
+}
+
+.player-board > span:first-of-type {
+    text-shadow: var(--reference-neon);
+}
+
+/* Neon buttons + reflective shine */
+.start-game-btn,
+.play-again-btn,
+.next-round-btn,
+.message-btn {
+    background: linear-gradient(145deg,#39ff78 0%,#16d956 48%,#08b947 100%);
+    box-shadow: 0 0 9px rgba(53,255,117,.65), 0 0 24px rgba(53,255,117,.32), 0 10px 28px rgba(31,255,105,.22), inset 0 1px 0 rgba(255,255,255,.38), inset 0 -7px 14px rgba(0,80,30,.18);
+}
+
+.start-game-btn::after,
+.play-again-btn::after,
+.next-round-btn::after,
+.message-btn::after {
+    content: "";
+    position: absolute;
+    top: -80%;
+    left: -35%;
+    width: 28%;
+    height: 260%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+    transform: rotate(18deg) translateX(-180%);
+    pointer-events: none;
+    animation: referenceShine 4.5s ease-in-out infinite;
+}
+
+.start-game-btn:hover,
+.play-again-btn:hover,
+.next-round-btn:hover,
+.message-btn:hover {
+    box-shadow: var(--reference-neon), 0 16px 35px rgba(53,255,117,.3), inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+/* Back / exit buttons */
+.back-btn {
+    background: linear-gradient(145deg, rgba(28,55,38,.78), rgba(4,17,9,.92));
+    box-shadow: 0 0 8px rgba(53,255,117,.25), inset 0 1px 0 rgba(255,255,255,.1);
+    text-shadow: var(--reference-neon);
+}
+
+.back-btn:hover {
+    box-shadow: var(--reference-neon), inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+/* Countdown ring */
+.countdown-content {
+    box-shadow: 0 0 8px rgba(53,255,117,.55), 0 0 35px rgba(53,255,117,.32), 0 0 70px rgba(53,255,117,.13), inset 0 0 35px rgba(53,255,117,.08);
+}
+
+#countdown-number {
+    text-shadow: 0 0 8px rgba(100,255,146,.95), 0 0 25px rgba(53,255,117,.75), 0 0 55px rgba(53,255,117,.35);
+}
+
+/* Result / modal glow */
+.round-result-box,
+.message-box {
+    box-shadow: 0 24px 70px rgba(0,0,0,.55), var(--reference-neon), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.round-result-box p,
+.result-content h3 {
+    text-shadow: var(--reference-neon);
+}
+
+@keyframes referenceStars {
+    0%,100% { transform: translateY(0); opacity: .55; }
+    50% { transform: translateY(7px); opacity: .9; }
+}
+
+@keyframes referenceTitleGlow {
+    0%,100% { text-shadow: 0 0 7px rgba(255,255,255,.22), 0 0 15px rgba(53,255,117,.42), 0 0 32px rgba(53,255,117,.16); }
+    50% { text-shadow: 0 0 9px rgba(255,255,255,.3), 0 0 22px rgba(53,255,117,.7), 0 0 48px rgba(53,255,117,.3); }
+}
+
+@keyframes referenceImageGlow {
+    0%,100% { filter: drop-shadow(0 0 7px rgba(53,255,117,.65)) drop-shadow(0 0 18px rgba(53,255,117,.3)); }
+    50% { filter: drop-shadow(0 0 12px rgba(53,255,117,.9)) drop-shadow(0 0 30px rgba(53,255,117,.48)); }
+}
+
+@keyframes referenceShine {
+    0%,68%,100% { transform: rotate(18deg) translateX(-180%); opacity: 0; }
+    76% { transform: rotate(18deg) translateX(520%); opacity: 1; }
+    84% { transform: rotate(18deg) translateX(520%); opacity: 0; }
+}
