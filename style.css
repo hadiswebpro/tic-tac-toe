@@ -903,3 +903,64 @@ button {
     filter: brightness(1.12);
   }
 }
+
+
+/* =========================================================
+   MOBILE / TABLET WELCOME SCREEN
+   Keep the desktop layout intact.
+========================================================= */
+
+@media (min-width: 701px) and (max-width: 1100px) {
+  .welcome-content {
+    justify-content: center;
+    padding: 70px 36px 90px;
+  }
+
+  .welcome-content h1 {
+    margin-top: 42px;
+  }
+
+  .welcome-image {
+    width: 360px;
+    height: 230px;
+    margin: 26px auto 34px;
+  }
+
+  .start-game-btn {
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  .welcome-content {
+    justify-content: center;
+    padding: 70px 14px 80px;
+  }
+
+  .welcome-content h1 {
+    margin-top: 55px;
+    font-size: clamp(2.7rem, 13vw, 4.2rem);
+  }
+
+  .welcome-content h2 {
+    margin-top: 20px;
+  }
+
+  .welcome-image {
+    width: min(310px, 78vw);
+    height: min(200px, 50vw);
+    margin: 28px auto 30px;
+  }
+
+  .start-game-btn {
+    margin-top: 8px;
+  }
+
+  .back-btn {
+    top: 18px;
+  }
+
+  .game-exit-btn {
+    top: 18px;
+  }
+}
