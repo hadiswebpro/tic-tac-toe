@@ -1137,3 +1137,37 @@ button {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Back buttons: top-left, comfortably inset and easier to tap. */
+.back-btn,
+.game-exit-btn {
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  right: auto;
+  bottom: auto;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+}
+
+@media (max-width: 700px) {
+  .screen-shell .back-btn,
+  .game-screen .game-exit-btn {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    left: max(12px, env(safe-area-inset-left));
+    right: auto;
+    bottom: auto;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
