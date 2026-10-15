@@ -187,7 +187,7 @@ button {
 }
 .back-btn {
   position: absolute;
-  top: 22px;
+  top: 2px;
   left: 22px;
   z-index: 10;
   width: 46px;
