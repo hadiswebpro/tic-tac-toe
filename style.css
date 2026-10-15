@@ -964,3 +964,176 @@ button {
     top: 18px;
   }
 }
+
+
+/* =========================================================
+   COHESIVE SCREEN SPACING + SUBTLE MOTION
+========================================================= */
+.welcome-content {
+  padding-top: 22vh;
+  padding-bottom: 8vh;
+  justify-content: flex-start;
+  gap: 0;
+}
+.welcome-content h1 {
+  animation: welcomeRise .8s cubic-bezier(.2,.75,.25,1) both;
+}
+.welcome-content h2 {
+  margin-top: 16px;
+  animation: welcomeRise .8s .12s cubic-bezier(.2,.75,.25,1) both;
+}
+.welcome-image {
+  width: clamp(250px, 28vw, 370px);
+  height: clamp(165px, 19vw, 245px);
+  margin: 12px auto 16px;
+  animation: float 4s ease-in-out infinite, welcomeRise .85s .2s both;
+}
+.welcome-content .start-game-btn {
+  animation: welcomeRise .8s .3s both;
+}
+.screen-shell {
+  animation: screenIn .45s ease-out both;
+}
+.game-screen {
+  justify-content: center;
+  gap: clamp(16px, 3vh, 28px);
+  padding-top: 56px;
+  padding-bottom: 32px;
+}
+.game-header,
+.game {
+  animation: welcomeRise .5s ease-out both;
+}
+.gameboard {
+  transition: box-shadow .25s ease, border-color .25s ease;
+}
+.board-cell:not(:empty) {
+  animation: markPop .22s cubic-bezier(.2,.8,.2,1) both;
+}
+.player-board {
+  animation: panelLift .55s ease-out both;
+}
+.result-content,
+.setup-content,
+.mode-content,
+.difficulty-content {
+  animation: screenIn .4s ease-out both;
+}
+@keyframes welcomeRise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes markPop {
+  from { opacity: .3; transform: scale(.72); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes panelLift {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 701px) {
+  .welcome-content {
+    padding-top: 21vh;
+  }
+  .welcome-image {
+    margin-top: 10px;
+    margin-bottom: 14px;
+  }
+  .game-exit-btn {
+    top: 24px;
+    left: 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .welcome-content {
+    justify-content: flex-start;
+    padding: 29vh 14px 7vh;
+  }
+  .welcome-content h1 {
+    margin-top: 0;
+    font-size: clamp(2.6rem, 12vw, 3.7rem);
+    letter-spacing: -2.5px;
+  }
+  .welcome-content h2 {
+    margin-top: 13px;
+    letter-spacing: 3px;
+  }
+  .welcome-image {
+    width: min(360px, 88vw);
+    height: min(235px, 57vw);
+    margin: 8px auto 15px;
+  }
+  .welcome-content .start-game-btn {
+    margin-top: 4px;
+  }
+
+  /* Keep gameplay grouped around the middle, with the board below its header. */
+  .game-screen {
+    justify-content: center;
+    gap: 16px;
+    padding: 12vh 12px 10vh;
+    overflow-y: auto;
+  }
+  .game-header {
+    margin-top: 1vh;
+  }
+  .game {
+    margin: 0 auto;
+    gap: 14px 10px;
+  }
+  .gameboard {
+    width: min(88vw, 365px);
+    max-width: 365px;
+  }
+
+  /* Put back/exit controls inside the visible viewport, away from the top edge. */
+  .screen-shell .back-btn,
+  .game-screen .game-exit-btn {
+    position: fixed;
+    top: auto;
+    right: 20px;
+    bottom: 22px;
+    left: auto;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    box-shadow: 0 0 12px rgba(53,255,117,.25), 0 5px 18px rgba(0,0,0,.35);
+  }
+  .back-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+  }
+  .setup-content {
+    margin: auto 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .welcome-content {
+    padding-top: 25vh;
+  }
+  .welcome-content h1 {
+    font-size: clamp(2.35rem, 11.5vw, 3rem);
+  }
+  .welcome-image {
+    width: min(320px, 86vw);
+    height: min(205px, 55vw);
+  }
+  .game-screen {
+    padding-top: 10vh;
+    padding-bottom: 9vh;
+  }
+  .gameboard {
+    width: min(86vw, 330px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
