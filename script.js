@@ -65,18 +65,6 @@ const TOTAL_ROUNDS = 3;
 const RESULT_REVEAL_DELAY = 1000;
 const FINAL_RESULT_DELAY = 1200;
 
-const mobileBackStyles = document.createElement("style");
-mobileBackStyles.textContent = `
-@media (max-width: 700px) {
-    .screen-shell .back-btn { width:38px; height:38px; top:-6px; left:0; font-size:1.15rem; }
-    .game-screen .game-exit-btn { width:38px; height:38px; top:8px; left:0; font-size:1.15rem; }
-}
-@media (max-width:460px) {
-    .screen-shell .back-btn { width:34px; height:34px; top:-10px; left:0; font-size:1rem; }
-    .game-screen .game-exit-btn { width:34px; height:34px; top:5px; font-size:1rem; }
-}`;
-document.head.appendChild(mobileBackStyles);
-
 /* Every screen is a separate full-page view. The welcome page starts visible;
    all other screens are hidden until showScreen() explicitly opens them. */
 welcomeScreen.style.display = "flex";
